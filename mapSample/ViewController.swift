@@ -13,9 +13,7 @@ import RxSwift
 import RxCocoa
 #endif
 
-
-
-class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UIScrollViewDelegate,GMSMapViewDelegate,DropDownTextFieldDataSourceDelegate {
+class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UIScrollViewDelegate,GMSMapViewDelegate {
 
     var searchText: DropDownTextField!
     var scrollView: UIScrollView!
@@ -24,7 +22,7 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
     let viewModel:MapViewModel = MapViewModel()
     let disposeBag = DisposeBag()
     var placeClient:GMSPlacesClient? = nil
-    
+    var aryPlace: [GMSAutocompletePrediction] = []
     
     /**
      xibを読み込む
@@ -139,7 +137,7 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
             }
             if results != nil{
                 
-                self?.searchText.aryData = results!
+                self?.aryPlace = results!
                 self?.searchText.dropDownTableView.reloadData()
 //
 //
@@ -227,7 +225,7 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
         
         let searchText = textField.text
         searchLocation(searchText ?? "")
-        self.searchText.aryData = []
+        self.aryPlace = []
         self.searchText.dropDownTableView.reloadData()
         return true
     }
@@ -237,6 +235,7 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
         dicParam.setValue("suggest", forKey: "method")
         dicParam.setValue("like", forKey: "matching")
         dicParam.setValue(searchText, forKey: "keyword")
+        print(dicParam)
         viewModel.searchLocation(dicParam)
     }
     
@@ -328,130 +327,52 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
     }
     
     
-    
-    func searchData(searchText: String) {
-        searchLocation(searchText)
-    }
-    
 
 }
 
-//extension ViewController:DropDownTextFieldDataSourceDelegate {
-//    
-//    func dropDownTextField(dropDownTextField: DropDownTextField, numberOfRowsInSection section: Int) -> Int
-//    {
-////        if aryPlace.count == 0{
-////            self.searchText.dropDownTableView.hidden = true
-////        }else{
-////            self.searchText.dropDownTableView.hidden = false
-////        }
-//        
-//        return aryPlace.count
-//    }
-//    
-//    func dropDownTextField(dropDownTextField: DropDownTextField, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "UITableViewCell")
-//        
-////        let place = aryPlace[indexPath.row]
-//        
-//        cell.textLabel!.text = ""
-//        cell.textLabel?.numberOfLines = 0
-//        
-//        return cell
-//    }
-//    
-//    func dropDownTextField(dropDownTextField: DropDownTextField, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-//        if indexPath.row < aryPlace.count{
-//            let placeData = aryPlace[indexPath.row]
-//            
-//            searchLocation(String(placeData.attributedFullText))
-//            
-//            aryPlace = []
-//            self.searchText.dropDownTableView.reloadData()
-//            
-//        }
-//    }
-//
-//}
+extension ViewController:DropDownTextFieldDataSourceDelegate {
+    
+    func getRowCount() -> Int {
+        
+        if aryPlace.count == 0{
+            self.searchText.dropDownTableView.hidden = true
+        }else{
+            self.searchText.dropDownTableView.hidden = false
+        }
+        
+        return aryPlace.count
+    }
+    
+    func dropDownTextField(dropDownTextField: DropDownTextField, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "UITableViewCell")
+        
+        let place = aryPlace[indexPath.row]
+        
+        cell.textLabel!.text = place.attributedPrimaryText.string
+        cell.textLabel?.numberOfLines = 0
+        
+        return cell
+    }
+    
+    func dropDownTextField(dropDownTextField: DropDownTextField, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        if indexPath.row < aryPlace.count{
+            let placeData = aryPlace[indexPath.row]
+            
+            searchLocation(placeData.attributedPrimaryText.string)
+            aryPlace = []
+            self.searchText.dropDownTableView.reloadData()
+            
+        }
+    }
+    
+    func getheaderHeight() -> CGFloat {
+        return CGFloat.min
+    }
+
+}
 
 
 
-
-//extension ViewController: GMSAutocompleteViewControllerDelegate {
-//
-//
-//
-//
-//    /**
-//     * Called when a place has been selected from the available autocomplete predictions.
-//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
-//     * @param place The |GMSPlace| that was returned.
-//     */
-//    func viewController(viewController: GMSAutocompleteViewController, didAutocompleteWithPlace place: GMSPlace)
-//    {
-//        self.dismissViewControllerAnimated(true, completion: nil)
-//    }
-//    
-//    /**
-//     * Called when a non-retryable error occurred when retrieving autocomplete predictions or place
-//     * details. A non-retryable error is defined as one that is unlikely to be fixed by immediately
-//     * retrying the operation.
-//     * <p>
-//     * Only the following values of |GMSPlacesErrorCode| are retryable:
-//     * <ul>
-//     * <li>kGMSPlacesNetworkError
-//     * <li>kGMSPlacesServerError
-//     * <li>kGMSPlacesInternalError
-//     * </ul>
-//     * All other error codes are non-retryable.
-//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
-//     * @param error The |NSError| that was returned.
-//     */
-//    func viewController(viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: NSError)
-//    {
-//        self.dismissViewControllerAnimated(true, completion: nil)
-//    }
-//    
-//    /**
-//     * Called when the user taps the Cancel button in a |GMSAutocompleteViewController|.
-//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
-//     */
-//    func wasCancelled(viewController: GMSAutocompleteViewController)
-//    {
-//        self.dismissViewControllerAnimated(true, completion: nil)
-//    }
-//    
-//    /**
-//     * Called when the user selects an autocomplete prediction from the list but before requesting
-//     * place details. Returning NO from this method will suppress the place details fetch and
-//     * didAutocompleteWithPlace will not be called.
-//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
-//     * @param prediction The |GMSAutocompletePrediction| that was selected.
-//     */
-//    func viewController(viewController: GMSAutocompleteViewController, didSelectPrediction prediction: GMSAutocompletePrediction) -> Bool{
-//        return true
-//    }
-//    
-//    /**
-//     * Called once every time new autocomplete predictions are received.
-//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
-//     */
-//    func didUpdateAutocompletePredictions(viewController: GMSAutocompleteViewController)
-//    {
-//        
-//    }
-//    
-//    /**
-//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
-//     * Called once immediately after a request for autocomplete predictions is made.
-//     */
-//    func didRequestAutocompletePredictions(viewController: GMSAutocompleteViewController)
-//    {
-//        
-//    }
-//    
-//    
-//}
 
 extension NSArray{
     func safeObjectAtIndex(index: Int) ->AnyObject?{
