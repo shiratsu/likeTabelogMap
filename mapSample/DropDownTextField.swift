@@ -7,18 +7,15 @@
 //
 
 import UIKit
-import GoogleMaps
-// MARK: Animation Style Enum
-public enum DropDownAnimationStyle {
-    case Basic
-    case Slide
-    case Expand
-    case Flip
-}
 
 // MARK: Dropdown Delegate
 public protocol DropDownTextFieldDataSourceDelegate: NSObjectProtocol {
-    func searchData(searchText:String)
+
+    func getheaderHeight() -> CGFloat
+    func getRowCount() -> Int
+    func dropDownTextField(dropDownTextField: DropDownTextField, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell
+    func dropDownTextField(dropDownTextField: DropDownTextField, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    
 }
 
 
@@ -36,10 +33,6 @@ public class DropDownTextField: UITextField {
     var rowHeight:CGFloat = 50
     var dropDownTableViewHeight: CGFloat = 150
     private var heightConstraint: NSLayoutConstraint!
-    public var animationStyle: DropDownAnimationStyle = .Basic
-    public typealias TableData = [GMSAutocompletePrediction]
-//    var aryPlace:[GMSAutocompletePrediction] = []
-    var aryData: [GMSAutocompletePrediction] = []
     
     // MARK: Init Methods
     required public init?(coder aDecoder: NSCoder) {
@@ -84,43 +77,11 @@ public class DropDownTextField: UITextField {
             
             NSLayoutConstraint.activateConstraints([leftConstraint, rightConstraint, heightConstraint, topConstraint])
             
-//            let tapGesture = UITapGestureRecognizer(target: self, action: "tapped:")
-//            tapGesture.numberOfTapsRequired = 1
-//            tapGesture.cancelsTouchesInView = false
-//            superview!.addGestureRecognizer(tapGesture)
+
         }
     }
     
-//    private func tableViewAppearanceChange(appear: Bool) {
-//        switch animationStyle {
-//        case .Basic:
-//            let basicAnimation = POPBasicAnimation(propertyNamed: kPOPViewAlpha)
-//            basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-//            basicAnimation.toValue = appear ? 1 : 0
-//            dropDownTableView.pop_addAnimation(basicAnimation, forKey: "basic")
-//        case .Slide:
-//            let basicAnimation = POPBasicAnimation(propertyNamed: kPOPLayoutConstraintConstant)
-//            basicAnimation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-//            basicAnimation.toValue = appear ? dropDownTableViewHeight : 0
-//            heightConstraint.pop_addAnimation(basicAnimation, forKey: "heightConstraint")
-//        case .Expand:
-//            let springAnimation = POPSpringAnimation(propertyNamed: kPOPViewSize)
-//            springAnimation.springSpeed = dropDownTableViewHeight / 100
-//            springAnimation.springBounciness = 10.0
-//            let width = appear ? CGRectGetWidth(frame) : 0
-//            let height = appear ? dropDownTableViewHeight : 0
-//            springAnimation.toValue = NSValue(CGSize: CGSize(width: width, height: height))
-//            dropDownTableView.pop_addAnimation(springAnimation, forKey: "expand")
-//        case .Flip:
-//            var identity = CATransform3DIdentity
-//            identity.m34 = -1.0/1000
-//            let angle = appear ? CGFloat(0) : CGFloat(M_PI_2)
-//            let rotationTransform = CATransform3DRotate(identity, angle, 0.0, 1.0, 0.0)
-//            UIView.animateWithDuration(0.5, animations: { () -> Void in
-//                self.dropDownTableView.layer.transform = rotationTransform
-//            })
-//        }
-//    }
+
     
     func editingChanged(textField: UITextField) {
         if textField.text!.characters.count > 0 {
@@ -133,57 +94,41 @@ public class DropDownTextField: UITextField {
     
 }
 
+
+
 // Mark: UITableViewDataSoruce
 extension DropDownTextField: UITableViewDataSource {
     public func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
-        if aryData.count > 0{
-            self.dropDownTableView.hidden = false
-        }else{
-            self.dropDownTableView.hidden = true
+        if self.dataSourceDelegate != nil{
+            return self.dataSourceDelegate!.getRowCount()
         }
+        return 0
         
-        return aryData.count
     }
     
     public func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-
-        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "UITableViewCell")
-        
-        let place = aryData[indexPath.row]
-        
-        cell.textLabel!.text = place.attributedPrimaryText.string
-        cell.textLabel?.numberOfLines = 0
-        
-        return cell
+        if self.dataSourceDelegate != nil {
+            return dataSourceDelegate!.dropDownTextField(self, cellForRowAtIndexPath: indexPath)
+        }
+        return UITableViewCell()
     }
 }
 
 // Mark: UITableViewDelegate
 extension DropDownTextField: UITableViewDelegate {
     public func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        if indexPath.row < aryData.count{
-            let place = aryData[indexPath.row]
-            self.dataSourceDelegate?.searchData(place.attributedPrimaryText.string)
-            aryData = []
-            self.dropDownTableView.reloadData()
+        if self.dataSourceDelegate != nil {
+            self.dataSourceDelegate!.dropDownTextField(self, didSelectRowAtIndexPath: indexPath)
         }
         
     }
     
-    
     public func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat{
-        
+        if self.dataSourceDelegate != nil{
+            return self.dataSourceDelegate!.getheaderHeight()
+        }
         return CGFloat.min
     }
-    
-    
-    
-    
-    public func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat{
-        return CGFloat.min        
-    }
-    
 }
 
 
