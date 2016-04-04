@@ -1,25 +1,28 @@
 PODS:
-  - GoogleMaps (1.12.3)
-  - RxBlocking (2.2.0):
-    - RxSwift (~> 2.2)
-  - RxCocoa (2.2.0):
-    - RxSwift (~> 2.2)
-  - RxSwift (2.2.0)
-  - RxTests (2.2.0):
-    - RxSwift (~> 2.2)
+  - GoogleMaps (1.13.0)
+  - pop (1.0.9)
+  - RxBlocking (2.3.1):
+    - RxSwift (~> 2.3.1)
+  - RxCocoa (2.3.1):
+    - RxSwift (~> 2.3.1)
+  - RxSwift (2.3.1)
+  - RxTests (2.3.1):
+    - RxSwift (~> 2.3.1)
 
 DEPENDENCIES:
   - GoogleMaps
+  - pop (~> 1.0)
   - RxBlocking (~> 2.0)
   - RxCocoa (~> 2.0)
   - RxSwift (~> 2.0)
   - RxTests (~> 2.0)
 
 SPEC CHECKSUMS:
-  GoogleMaps: a4ac67918d0b5ba5f6b9893ac80487e357779e6c
-  RxBlocking: 5bbc826774c4290effa8fe070841e9d45e864639
-  RxCocoa: 42efb7a7145a8d1d5878e94ce48a580d29e0c796
-  RxSwift: b8a749f2204c6c7a5c29b306a9c3bc11d5b87c5b
-  RxTests: bff19d036313b8f9bbfcc8e2f9ae436dffc7093f
+  GoogleMaps: 7a6caeb8336d7cb42982e969fc9b1b20a889fe79
+  pop: f667631a5108a2e60d9e8797c9b32ddaf2080bce
+  RxBlocking: 84fd81865a641a3843b33bae7b8315e78ddbd383
+  RxCocoa: a2baaf3462b989559a51dce59d78fbebb8fe0afa
+  RxSwift: 829b2843e9eddc77a02cb3f5117f0d55f8f646f1
+  RxTests: 86e059f7257a92be9baf124975c71297555daf53
 
 COCOAPODS: 0.38.2

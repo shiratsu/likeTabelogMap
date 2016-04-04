@@ -6,3 +6,4 @@
 #import "MLPAutoCompleteTextField.h"
 #import "MLPAutoCompletionObject.h"
 #import "NSString+Levenshtein.h"
+#import <pop/POP.h>

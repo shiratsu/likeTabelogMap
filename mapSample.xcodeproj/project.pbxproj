@@ -29,6 +29,9 @@
 		56598B1A1C966136003DAFEA /* InfoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56598B191C966136003DAFEA /* InfoCard.swift */; };
 		56598B1C1C96619D003DAFEA /* InfoCard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 56598B1B1C96619D003DAFEA /* InfoCard.xib */; };
 		56598B1E1C9697D1003DAFEA /* CustomGMSMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56598B1D1C9697D1003DAFEA /* CustomGMSMarker.swift */; };
+		5662E8101CAF3795000753A3 /* TextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5662E80F1CAF3795000753A3 /* TextFieldDelegate.swift */; };
+		566524611CACBFF3000A69E3 /* DropDownTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566524601CACBFF3000A69E3 /* DropDownTextField.swift */; };
+		566524641CACC60C000A69E3 /* pop.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562C17081CACB2D500A3F00B /* pop.framework */; };
 		CD0BAE4D3E56A3619B3D88DA /* Pods_mapSample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4E50DFF60F381CC2C0CDE8F /* Pods_mapSample.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
@@ -51,6 +54,7 @@
 
 /* Begin PBXFileReference section */
 		22CD2E036B686A2837567038 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		562C17081CACB2D500A3F00B /* pop.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = pop.framework; path = "../../Library/Developer/Xcode/DerivedData/mapSample-cairrjrggexazabzlzsqdaywvfhf/Build/Products/Debug-iphonesimulator/pop.framework"; sourceTree = "<group>"; };
 		563EECF71C919CF900B21F07 /* mapSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mapSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		563EECFA1C919CF900B21F07 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		563EECFC1C919CF900B21F07 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -85,6 +89,8 @@
 		56598B191C966136003DAFEA /* InfoCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoCard.swift; sourceTree = "<group>"; };
 		56598B1B1C96619D003DAFEA /* InfoCard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoCard.xib; sourceTree = "<group>"; };
 		56598B1D1C9697D1003DAFEA /* CustomGMSMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomGMSMarker.swift; sourceTree = "<group>"; };
+		5662E80F1CAF3795000753A3 /* TextFieldDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldDelegate.swift; sourceTree = "<group>"; };
+		566524601CACBFF3000A69E3 /* DropDownTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropDownTextField.swift; sourceTree = "<group>"; };
 		7A3DC2D93A89925545ECCC9C /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4E50DFF60F381CC2C0CDE8F /* Pods_mapSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_mapSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1F30BB14711A186F17CD8D1 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -95,6 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				566524641CACC60C000A69E3 /* pop.framework in Frameworks */,
 				56598B001C9281E6003DAFEA /* RxBlocking.framework in Frameworks */,
 				56598B011C9281E6003DAFEA /* RxCocoa.framework in Frameworks */,
 				56598B021C9281E6003DAFEA /* RxSwift.framework in Frameworks */,
@@ -161,6 +168,8 @@
 				56598B191C966136003DAFEA /* InfoCard.swift */,
 				56598B1B1C96619D003DAFEA /* InfoCard.xib */,
 				56598B1D1C9697D1003DAFEA /* CustomGMSMarker.swift */,
+				566524601CACBFF3000A69E3 /* DropDownTextField.swift */,
+				5662E80F1CAF3795000753A3 /* TextFieldDelegate.swift */,
 			);
 			path = mapSample;
 			sourceTree = "<group>";
@@ -218,6 +227,7 @@
 		C2CF1DC83FBBB563738205D2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				562C17081CACB2D500A3F00B /* pop.framework */,
 				56598B041C9285BA003DAFEA /* RxTests.framework */,
 				56598AFC1C9281E6003DAFEA /* RxBlocking.framework */,
 				56598AFD1C9281E6003DAFEA /* RxCocoa.framework */,
@@ -418,7 +428,9 @@
 				563EECFD1C919CF900B21F07 /* ViewController.swift in Sources */,
 				56598B0F1C92A27C003DAFEA /* NSString+Levenshtein.m in Sources */,
 				56598B1A1C966136003DAFEA /* InfoCard.swift in Sources */,
+				5662E8101CAF3795000753A3 /* TextFieldDelegate.swift in Sources */,
 				56598B0E1C92A27C003DAFEA /* MLPAutoCompleteTextField.m in Sources */,
+				566524611CACBFF3000A69E3 /* DropDownTextField.swift in Sources */,
 				56598B1E1C9697D1003DAFEA /* CustomGMSMarker.swift in Sources */,
 				56598AFB1C927DC8003DAFEA /* SampleApi.swift in Sources */,
 				563EECFB1C919CF900B21F07 /* AppDelegate.swift in Sources */,
@@ -563,10 +575,19 @@
 			baseConfigurationReference = 22CD2E036B686A2837567038 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/mapSample",
+				);
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleMaps\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleMaps/GoogleMaps\"",
+					"\"${PODS_ROOT}/Headers/Private\"",
+					"\"${PODS_ROOT}/Headers/Private/pop\"",
 				);
 				INFOPLIST_FILE = mapSample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -582,10 +603,19 @@
 			baseConfigurationReference = F1F30BB14711A186F17CD8D1 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug-iphoneos",
+					"$(PROJECT_DIR)/mapSample",
+				);
+				HEADER_SEARCH_PATHS = (
+					"\"${PODS_ROOT}/Headers/Public\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleMaps\"",
+					"\"${PODS_ROOT}/Headers/Public/GoogleMaps/GoogleMaps\"",
+					"\"${PODS_ROOT}/Headers/Private\"",
+					"\"${PODS_ROOT}/Headers/Private/pop\"",
 				);
 				INFOPLIST_FILE = mapSample/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

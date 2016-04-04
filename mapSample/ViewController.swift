@@ -13,14 +13,18 @@ import RxSwift
 import RxCocoa
 #endif
 
-class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UIScrollViewDelegate,GMSMapViewDelegate {
 
-    var searchText: UITextField!
+
+class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UIScrollViewDelegate,GMSMapViewDelegate,DropDownTextFieldDataSourceDelegate {
+
+    var searchText: DropDownTextField!
     var scrollView: UIScrollView!
     var mapView:GMSMapView!
     
     let viewModel:MapViewModel = MapViewModel()
     let disposeBag = DisposeBag()
+    var placeClient:GMSPlacesClient? = nil
+    
     
     /**
      xibを読み込む
@@ -42,15 +46,22 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
         mapView.delegate = self
         self.view = mapView
         
+        placeClient = GMSPlacesClient.sharedClient()
+        
         let marker = GMSMarker()
         marker.position = CLLocationCoordinate2DMake(35.6548503,139.7501517 )
         marker.title = "東京都"
         marker.snippet = "芝公園駅"
         marker.map = mapView
         
-        searchText = UITextField(frame: CGRect(x: 10, y: 10, width: UIScreen.mainScreen().bounds.size.width-20, height: 30))
+        searchText = DropDownTextField(frame: CGRect(x: 10, y: 10, width: UIScreen.mainScreen().bounds.size.width-20, height: 30))
         searchText.backgroundColor = UIColor.whiteColor()
+        
         searchText.delegate = self
+        searchText.dataSourceDelegate = self
+        searchText.addTarget(self, action: #selector(ViewController.textFieldDidChange(_:)), forControlEvents: UIControlEvents.EditingChanged)
+        
+        
         self.view.addSubview(searchText)
         
         setConstRaintText()
@@ -63,8 +74,6 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
     func setSubscribe(){
         viewModel.items.asObservable()
             .subscribeNext { [weak self] array in
-                
-                print(array)
                 
                 if ((self?.scrollView?.isDescendantOfView((self?.view)!)) != nil){
                     self?.scrollView.removeFromSuperview()
@@ -110,7 +119,7 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
                     marker.tag = i
                     
                     self?.scrollView.addSubview(locationInfo)
-                    i++
+                    i+=1
                 }
                 self?.scrollView.contentSize = CGSize(width: CGFloat(x)+15, height: (self?.scrollView.frame.size.height)!)
                 
@@ -120,7 +129,29 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
             .addDisposableTo(disposeBag)
     }
     
-    
+    func placeAutocomplete(strLocation:String) {
+        let filter = GMSAutocompleteFilter()
+        filter.type = GMSPlacesAutocompleteTypeFilter.Region
+        filter.country = "JP"
+        placeClient?.autocompleteQuery(strLocation, bounds: nil, filter: filter, callback: { [weak self](results, error: NSError?) -> Void in
+            if let error = error {
+                print("Autocomplete error \(error)")
+            }
+            if results != nil{
+                
+                self?.searchText.aryData = results!
+                self?.searchText.dropDownTableView.reloadData()
+//
+//
+                for result in results! {
+                    if let result = result as? GMSAutocompletePrediction {
+                        print("Result \(result.attributedFullText) with placeID \(result.placeID)")
+                    }
+                }
+            }
+            
+        })
+    }
     
     
     /**
@@ -179,6 +210,13 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
     
     func textFieldDidBeginEditing(textField: UITextField){
         print(textField.text)
+        self.searchText.setUpTable()
+        
+    }
+    
+    func textFieldDidChange(textField: UITextField) {
+        //your code
+        placeAutocomplete(textField.text!)
     }
     
     func textFieldDidEndEditing(textField: UITextField){
@@ -188,14 +226,20 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
     func textFieldShouldReturn(textField: UITextField) -> Bool{
         
         let searchText = textField.text
+        searchLocation(searchText ?? "")
+        self.searchText.aryData = []
+        self.searchText.dropDownTableView.reloadData()
+        return true
+    }
+    
+    func searchLocation(searchText:String){
         let dicParam:NSMutableDictionary = NSMutableDictionary()
         dicParam.setValue("suggest", forKey: "method")
         dicParam.setValue("like", forKey: "matching")
         dicParam.setValue(searchText, forKey: "keyword")
         viewModel.searchLocation(dicParam)
-        
-        return true
     }
+    
     
     
     /**
@@ -206,7 +250,7 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
     class func removeGMSBlockingGestureRecognizerFromMapView(mapView:GMSMapView){
         //print(mapView.gestureRecognizers)
         
-        if mapView.settings.respondsToSelector("consumesGesturesInView"){
+        if mapView.settings.respondsToSelector(Selector("consumesGesturesInView")){
             mapView.settings.consumesGesturesInView = false
         }else{
             for gestureRecognizer in mapView.gestureRecognizers!{
@@ -259,7 +303,6 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
     
     func mapView(mapView: GMSMapView, didTapMarker marker: GMSMarker) -> Bool {
         if let customMarker = marker as? CustomGMSMarker{
-            print(mapView.selectedMarker)
             if let selectedMarker = mapView.selectedMarker as? CustomGMSMarker{
                 selectedMarker.icon = UIImage(named: "mapIcon")
             }
@@ -286,10 +329,129 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
     
     
     
+    func searchData(searchText: String) {
+        searchLocation(searchText)
+    }
+    
 
 }
 
+//extension ViewController:DropDownTextFieldDataSourceDelegate {
+//    
+//    func dropDownTextField(dropDownTextField: DropDownTextField, numberOfRowsInSection section: Int) -> Int
+//    {
+////        if aryPlace.count == 0{
+////            self.searchText.dropDownTableView.hidden = true
+////        }else{
+////            self.searchText.dropDownTableView.hidden = false
+////        }
+//        
+//        return aryPlace.count
+//    }
+//    
+//    func dropDownTextField(dropDownTextField: DropDownTextField, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+//        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "UITableViewCell")
+//        
+////        let place = aryPlace[indexPath.row]
+//        
+//        cell.textLabel!.text = ""
+//        cell.textLabel?.numberOfLines = 0
+//        
+//        return cell
+//    }
+//    
+//    func dropDownTextField(dropDownTextField: DropDownTextField, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+//        if indexPath.row < aryPlace.count{
+//            let placeData = aryPlace[indexPath.row]
+//            
+//            searchLocation(String(placeData.attributedFullText))
+//            
+//            aryPlace = []
+//            self.searchText.dropDownTableView.reloadData()
+//            
+//        }
+//    }
+//
+//}
 
+
+
+
+//extension ViewController: GMSAutocompleteViewControllerDelegate {
+//
+//
+//
+//
+//    /**
+//     * Called when a place has been selected from the available autocomplete predictions.
+//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
+//     * @param place The |GMSPlace| that was returned.
+//     */
+//    func viewController(viewController: GMSAutocompleteViewController, didAutocompleteWithPlace place: GMSPlace)
+//    {
+//        self.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//    
+//    /**
+//     * Called when a non-retryable error occurred when retrieving autocomplete predictions or place
+//     * details. A non-retryable error is defined as one that is unlikely to be fixed by immediately
+//     * retrying the operation.
+//     * <p>
+//     * Only the following values of |GMSPlacesErrorCode| are retryable:
+//     * <ul>
+//     * <li>kGMSPlacesNetworkError
+//     * <li>kGMSPlacesServerError
+//     * <li>kGMSPlacesInternalError
+//     * </ul>
+//     * All other error codes are non-retryable.
+//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
+//     * @param error The |NSError| that was returned.
+//     */
+//    func viewController(viewController: GMSAutocompleteViewController, didFailAutocompleteWithError error: NSError)
+//    {
+//        self.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//    
+//    /**
+//     * Called when the user taps the Cancel button in a |GMSAutocompleteViewController|.
+//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
+//     */
+//    func wasCancelled(viewController: GMSAutocompleteViewController)
+//    {
+//        self.dismissViewControllerAnimated(true, completion: nil)
+//    }
+//    
+//    /**
+//     * Called when the user selects an autocomplete prediction from the list but before requesting
+//     * place details. Returning NO from this method will suppress the place details fetch and
+//     * didAutocompleteWithPlace will not be called.
+//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
+//     * @param prediction The |GMSAutocompletePrediction| that was selected.
+//     */
+//    func viewController(viewController: GMSAutocompleteViewController, didSelectPrediction prediction: GMSAutocompletePrediction) -> Bool{
+//        return true
+//    }
+//    
+//    /**
+//     * Called once every time new autocomplete predictions are received.
+//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
+//     */
+//    func didUpdateAutocompletePredictions(viewController: GMSAutocompleteViewController)
+//    {
+//        
+//    }
+//    
+//    /**
+//     * @param viewController The |GMSAutocompleteViewController| that generated the event.
+//     * Called once immediately after a request for autocomplete predictions is made.
+//     */
+//    func didRequestAutocompletePredictions(viewController: GMSAutocompleteViewController)
+//    {
+//        
+//    }
+//    
+//    
+//}
 
 extension NSArray{
     func safeObjectAtIndex(index: Int) ->AnyObject?{
