@@ -331,7 +331,7 @@ class ViewController: UIViewController,UITextFieldDelegate,InfoCardDelegate,UISc
 }
 
 extension ViewController:DropDownTextFieldDataSourceDelegate {
-    
+
     func getRowCount() -> Int {
         
         if aryPlace.count == 0{

@@ -36,6 +36,7 @@ class SampleApi : NSObject{
         //いろいろする
         let url = NSURL(string: url_str)!
         let request = NSURLRequest(URL: url)
+        print(url_str)
         return NSURLSession.sharedSession().rx_response(request)
             .observeOn(Dependencies.sharedDependencies.backgroundWorkScheduler)
             .map { data, response in
@@ -64,6 +65,7 @@ class SampleApi : NSObject{
             return NSArray()
             
         }
+        print(dict)
         
         guard let entries = dict.objectForKey("response") as? NSDictionary else {
             print("Can't find results")
